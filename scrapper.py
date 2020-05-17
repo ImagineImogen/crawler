@@ -41,20 +41,23 @@ class Scrapper:
         # Reads the HTML file
         self.html_file = open('search_results.html', encoding="utf-8").read()
         # Parses the HTML file
-        self.parser = bs.BeautifulSoup(self.html_file, 'html.parser')
-        list = []
+        try:
+            self.parser = bs.BeautifulSoup(self.html_file, 'html.parser')
+            list = []
         # If the search engine to use is Google
-        if "google" in engine.lower():
-            for elem in self.parser.find_all("div", {"class": "ZINbbc xpd O9g5cc uUPGi"}):
-                # Processes and adds each result from the HTML file to the list
-                result = "Result: {0}".format(elem.text)
-                list.append(result)
-        # If the search engine to use is Yandex
-        else:
-            for elem in self.parser.find("ul", {"class": "serp-list serp-list_left_yes"}).find_all('a', {"class": 'link link_theme_outer path__item i-bem'}):
-                # Processes and adds each result from the HTML file to the list
-                result = "Result: {0}\n{1}".format(elem.text, elem.get('href'))
-                list.append(result)
+            if "google" in engine.lower():
+                for elem in self.parser.find_all("div", {"class": "ZINbbc xpd O9g5cc uUPGi"}):
+                    # Processes and adds each result from the HTML file to the list
+                    result = "Result: {0}".format(elem.text)
+                    list.append(result)
+            # If the search engine to use is Yandex
+            else:
+                for elem in self.parser.find("ul", {"class": "serp-list serp-list_left_yes"}).find_all('a', {"class": 'link link_theme_outer path__item i-bem'}):
+                    # Processes and adds each result from the HTML file to the list
+                    result = "Result: {0}\n{1}".format(elem.text, elem.get('href'))
+                    list.append(result)
+        finally:
+            self.html_file.close()
 
-        for i in range(len(list)):
-            print(list[i])
+        for i in list:
+            print(i)
